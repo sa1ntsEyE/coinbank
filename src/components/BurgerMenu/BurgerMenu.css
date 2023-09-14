@@ -1,0 +1,190 @@
+.wrapper{
+    overflow: hidden;
+}
+
+.heroBurger, .mainBurger {
+    display: none;
+}
+
+.left--nav--white {
+    display: none;
+}
+
+.motion.div {
+    position: absolute;
+}
+
+.McButton {
+    position: relative;
+    display: flex;
+    width: 44px;
+    height: 33px;
+    cursor: pointer;
+}
+
+@media (max-width: 1024px) {
+    .mainBurgerblock {
+        position: relative;
+    }
+
+     .mainBurger {
+         position: relative;
+         display: flex;
+         justify-content: space-between;
+         align-items: center;
+         text-align: center;
+         max-width: 1024px;
+         min-height: 96px;
+         margin: 0 auto;
+         padding: 0 20px;
+    }
+
+    .nav--main--Burger{
+        min-height: 80vh;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-direction: column;
+    }
+
+    .center--nav--Burger nav ul{
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        font-feature-settings: 'ss06' on;
+        font-family: "Poppins";
+        font-size: 38px;
+        font-style: normal;
+        font-weight: 500;
+        gap: 40px;
+    }
+
+    .headers__text--Burger {
+        display: flex;
+        font-feature-settings: 'ss06' on;
+        font-family: "Poppins";
+        font-size: 38px;
+        font-style: normal;
+        font-weight: 500;
+    }
+    .Link--right--nav-get-started {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .heroBurger {
+        min-height: 80vh;
+        position: relative;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        text-align: center;
+        max-width: 1024px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+
+    .active2 {
+        position: relative;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        text-align: center;
+        max-width: 1024px;
+        min-height: 96px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+
+    @keyframes slideDown {
+        0% {
+            transform: translateY(-10%);
+            opacity: 0;
+        }
+        100% {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+
+    .active3 {
+        position: fixed;
+        overflow: auto;
+        z-index: 1414;
+        width: 100%;
+        height: 100%;
+        background: none;
+        -webkit-backdrop-filter: blur(50px);
+        backdrop-filter: blur(50px);
+        animation: slideDown 0.5s ease-in-out;
+    }
+
+    .active4 {
+        overflow: hidden;
+    }
+
+    .McButton {
+        position: relative;
+        display: flex;
+        width: 55px;
+        height: 33px;
+        cursor: pointer;
+    }
+
+    .right--nav--Burger {
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+    }
+
+    .right--nav-get-started {
+        width: 80vw;
+        font-family: "Poppins";
+        font-size: 28px;
+        font-style: normal;
+        font-weight: 500;
+    }
+}
+
+
+
+@keyframes burgerAnimation {
+    from {opacity: 0}
+    to {opacity: 1}
+}
+
+
+
+.McButton.active .McBar1 {
+    top: 50%;
+}
+
+.McButton.active .McBar2 {
+    display: none;
+}
+
+.McButton.active .McBar3 {
+    top: 50%;
+    transform: rotateZ(90deg);
+}
+
+.McBar {
+    position: absolute;
+    left: 0;
+    width: 44px;
+    height: 3px;
+    background-color: black;
+}
+
+.McBar1 {
+    top: 0;
+}
+
+.McBar2 {
+    top: 50%;
+}
+
+.McBar3 {
+    top: 100%;
+}

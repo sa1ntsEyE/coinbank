@@ -1,0 +1,22 @@
+.signUp--left--content {
+    display: flex;
+    justify-content: space-around;
+    flex-direction: column;
+    width: 448px;
+    min-height: 721px;
+}
+
+.left--content--inputList--2 {
+    width: 448px;
+    height: 257px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    color: #131316;
+    font-feature-settings: 'ss06' on;
+    font-family: "Poppins";
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 145%;
+}

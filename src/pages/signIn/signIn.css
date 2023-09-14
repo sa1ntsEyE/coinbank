@@ -1,0 +1,289 @@
+.wrapper--signIn {
+    background: linear-gradient(180deg, #FFF 0%, #F7F6FE 92.19%);
+    box-shadow: 0px 4px 200px 0px rgba(232, 249, 247, 0.20);
+}
+
+.signIn--main {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    min-height: 100vh;
+
+}
+
+.signIn--left {
+    width: 608px;
+    min-height: 908px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(255,255,255,0.15);
+    -webkit-backdrop-filter: blur(25px);
+    backdrop-filter: blur(25px);
+    border: 1px solid rgba(255,255,255,0.5);
+    border-bottom: 1px solid rgba(255,255,255,0.25);
+    border-left: 1px solid rgba(255,255,255,0.25);
+    border-radius: 20px;
+    box-shadow: 0 25px 50px rgba(0,0,0,0.1);
+
+}
+
+.signIn--left--content {
+    display: flex;
+    justify-content: space-around;
+    flex-direction: column;
+    width: 448px;
+    min-height: 666px;
+
+}
+
+.left--content--headline {
+    max-width: 448px;
+    height: 148px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.headline--text--title {
+    color: #000;
+    font-feature-settings: 'ss06' on;
+    font-family: "Poppins";
+    font-size: 40px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 140%;
+    letter-spacing: -0.4px;
+}
+
+.headline--text--subtitle {
+    color: #717184;
+    font-feature-settings: 'ss06' on;
+    font-family: "Poppins";
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 155%;
+}
+
+.left--content--inputList {
+    width: 448px;
+    height: 202px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    color: #131316;
+    font-feature-settings: 'ss06' on;
+    font-family: "Poppins";
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 145%;
+}
+
+.left--content--inputList a {
+    color: #5235E8;
+    font-feature-settings: 'ss06' on;
+    font-family: "Poppins";
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 145%;
+}
+
+.content--inputList--name input {
+    display: flex;
+    padding: 12px 24px;
+    width: 400px;
+    font-size: 18px;
+    align-items: flex-start;
+    align-self: stretch;
+    border-radius: 8px;
+    border: 1px solid black;
+}
+
+.content--inputList--name input:focus {
+    border: 1px solid #5235E8;
+    background:#FFF;
+    box-shadow: 0px 0px 12px 0px rgba(82, 53, 232, 0.20);
+}
+
+.content--inputList--email input {
+    display: flex;
+    padding: 12px 24px;
+    width: 400px;
+    font-size: 18px;
+    align-items: flex-start;
+    align-self: stretch;
+    border-radius: 8px;
+    border: 1px solid black;
+}
+
+.content--inputList--email input:focus {
+    border: 1px solid #5235E8;
+    background:#FFF;
+    box-shadow: 0px 0px 12px 0px rgba(82, 53, 232, 0.20);
+}
+.content--inputList--Password input {
+    display: flex;
+    padding: 12px 24px;
+    width: 400px;
+    font-size: 18px;
+    align-items: flex-start;
+    align-self: stretch;
+    border-radius: 8px;
+    border: 1px solid black;
+}
+
+.content--inputList--Password input:focus {
+    border: 1px solid #5235E8;
+    background:#FFF;
+    box-shadow: 0px 0px 12px 0px rgba(82, 53, 232, 0.20);
+}
+
+.left--content--action {
+    width: 448px;
+    height: 176px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
+
+.left--content--action button {
+    color: #0E0637;
+    font-feature-settings: 'ss06' on;
+    font-family: "Poppins";
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 160%; /* 25.6px */
+    letter-spacing: 0.08px;
+}
+
+.left--content--action button {
+    display: flex;
+    padding: 11px 24px;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    align-self: stretch;
+    border-radius: 8px;
+    border: 1px solid #D6D1FA;
+    background: #FFF;
+    cursor: pointer;
+}
+
+.left--content--action button:first-child {
+    border-radius: 8px;
+    background: #5235E8;
+    color: #FFF;
+    font-feature-settings: 'ss06' on;
+    font-family: "Poppins";
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 160%; /* 25.6px */
+    letter-spacing: 0.08px;
+    border: none;
+}
+
+.left--content--signUp {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+}
+
+.left--content--signUp a{
+    color: #5235E8;
+    font-feature-settings: 'ss06' on;
+    font-family: "Poppins";
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 145%;
+}
+
+.signIn--right {
+    background: rgba(255,255,255,0.15);
+    -webkit-backdrop-filter: blur(25px);
+    backdrop-filter: blur(25px);
+    border: 1px solid rgba(255,255,255,0.5);
+    border-bottom: 1px solid rgba(255,255,255,0.25);
+    border-left: 1px solid rgba(255,255,255,0.25);
+    border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.5);
+}
+
+.signIn--right img {
+    max-width:100%
+
+}
+
+
+@media (max-width: 1024px) {
+    .signIn--right {
+        display: none;
+    }
+
+    .signIn--main {
+        justify-content: center;
+    }
+
+    
+}
+
+@media (max-width: 480px) {
+    .left--content--inputList {
+        align-items: center;
+    }
+
+    .left--content--inputList--2 {
+        align-items: center;
+    }
+
+    .content--inputList--name input,
+    .content--inputList--email input,
+    .content--inputList--Password input{
+        width: 240px;
+    }
+
+    .left--content--inputList {
+        min-width: 100%;
+    }
+
+    .left--content--inputList--2 {
+        min-width: 100%;
+    }
+
+    .left--content--action {
+        width: 100%;
+        flex-direction: row;
+        justify-content: center;
+    }
+
+    .left--content--action button {
+        width: 150px;
+
+    }
+
+    .signUp--left--content {
+        align-items: center;
+    }
+
+    .left--content--headline {
+        align-items: center;
+    }
+
+    .content--headline--text {
+        text-align: center;
+    }
+
+    .headline--text--title {
+        font-size: 30px;
+    }
+
+    .headline--text--subtitle {
+        font-size: 14px;
+    }
+}
