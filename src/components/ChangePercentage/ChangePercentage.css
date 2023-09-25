@@ -1,0 +1,16 @@
+.red-bg {
+    background: #FFEBF0;
+    color: #FB3766;
+}
+
+.green-bg {
+    background: #ECFDF7;
+    color: #11CF8B;
+
+}
+
+
+.change {
+    display: flex;
+    align-items: center;
+}

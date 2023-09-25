@@ -34,7 +34,6 @@ function App() {
         });
 
         return () => {
-            // Unsubscribe from the auth state change listener when the component unmounts
             unsubscribe();
         };
     }, [dispatch]);
@@ -60,11 +59,6 @@ function App() {
             </Routes>
         </div>
     );
-
-    // const addToOrder = (item) => {
-    //     this.setState({orders: [...this.state.orders, item]});
-    // };
-
 }
 
 export default App;

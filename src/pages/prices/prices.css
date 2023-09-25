@@ -20,6 +20,7 @@
 }
 
 .prices--content--headline {
+    padding-left: 10px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -68,7 +69,7 @@
     justify-content: space-between;
     padding: 24px;
     min-width: 208px;
-    height: 158px;
+    min-height: 158px;
     border-radius: 16px;
     background: #FFF;
     box-shadow: 0px 20px 80px 0px rgba(82, 53, 232, 0.10);
@@ -137,6 +138,14 @@
     .price--coin--content--card {
         max-width: 208px;
     }
+
+    .table--prices--MarketCap {
+        display: none;
+    }
+
+    .table--prices--body--MarketCap {
+        display: none;
+    }
 }
 
 /*wrapper--table--prices*/
@@ -169,8 +178,8 @@
 }
 
 .table--prices--Price {
-    width: 140px;
-    padding: 0 24px;
+    width: 100px;
+    padding: 0 14px;
     color: #717184;
     font-feature-settings: 'ss06' on;
     font-family: "Poppins";
@@ -205,7 +214,7 @@
 }
 
 .table--prices--Last{
-    width: 128px;
+    width: 228px;
     padding: 0 24px;
     color: #717184;
     font-feature-settings: 'ss06' on;
@@ -237,7 +246,7 @@
 }
 
 .table--prices--card {
-    height: 64px;
+    min-height: 64px;
     display: flex;
     align-items: center;
     border-bottom: 1px solid #E3E3E8;
@@ -251,7 +260,7 @@
 }
 
 .table--prices--body--Price {
-    width: 140px;
+    width: 100px;
     padding: 0 24px;
 }
 
@@ -290,7 +299,7 @@
 }
 
 .table--prices--body--Last{
-    width: 128px;
+    width: 228px;
     padding: 0 24px;
 }
 
@@ -378,7 +387,7 @@
     border: none;
 }
 
-@media (max-width: 868px) {
+@media (max-width: 878px) {
     .table--prices--head {
         justify-content: center;
     }

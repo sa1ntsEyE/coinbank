@@ -8,13 +8,16 @@ import logo from "../../assets/Logo.png";
 import {useDispatch} from "react-redux";
 import {useAuth} from "../../hooks/use-auth";
 import {signOut} from "firebase/auth";
-import {auth} from "../../firebase";
+import {auth, db} from "../../firebase";
 import {removeUser} from "../../store/slices/userSlice";
 import logo2 from "../../assets/Logo.png";
 import BurgerMenu from "../BurgerMenu/BurgerMenu";
+import { collection, addDoc, deleteDoc, query, where, onSnapshot, doc } from 'firebase/firestore';
+import ModalPay from "../Modals/ModalPay/ModalPay";
+
 
 const AdminPanel = () => {
-    const url = "http://localhost:3001/message";
+    // const url = "http://localhost:3001/message";
     const [items, setItems] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(3);
@@ -27,6 +30,9 @@ const AdminPanel = () => {
     const paginate = pageNumber => setCurrentPage(pageNumber)
     const dispatch = useDispatch();
     const {isAuth, token, photo, name, nickname, username, email} = useAuth();
+    const [data, setData] = useState([]);
+    const itemsCollection = collection(db, 'items');
+
     const logOut = () => {
         signOut(auth).then(() => {
             dispatch(removeUser())
@@ -35,38 +41,31 @@ const AdminPanel = () => {
         });
     }
 
-    useEffect(() => {
-        const fetchItems = async () => {
-            try {
-                const response = await fetch(url);
-                const listItems = await response.json();
-                setItems(listItems);
+    let unsubscribe;
 
-            } catch (err) {
-                console.log(err.stack)
-            }
-        }
-        const handleAddCardClick = (event) => {
-            const closeWindow = document.getElementById("addcard");
-            const open = document.getElementById("open");
+    useEffect(() => {
+
+        const loadItems = async () => {
+            const q = query(itemsCollection);
+            unsubscribe = onSnapshot(q, (snapshot) => {
+                const itemsData = [];
+                snapshot.forEach((doc) => {
+                    itemsData.push({ id: doc.id, ...doc.data() });
+                });
+                setItems(itemsData);
+            });
         };
-        fetchItems();
-        document.addEventListener('click', handleAddCardClick);
-        return () => {
-            document.removeEventListener('click', handleAddCardClick);
-        };
+        loadItems();
+
+        return () => unsubscribe();
     }, []);
+
+
 
     const handleAdd = async (newItem) => {
         try {
-            const response = await fetch(url, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(newItem),
-            });
-            const createdItem = await response.json();
+            const docRef = await addDoc(itemsCollection, newItem);
+            const createdItem = { id: docRef.id, ...newItem };
             setItems((prevItems) => [...prevItems, createdItem]);
         } catch (error) {
             console.error(error);
@@ -75,14 +74,13 @@ const AdminPanel = () => {
 
     const handleRemove = async (id) => {
         try {
-            await fetch(`${url}/${id}`, {
-                method: "DELETE",
-            });
-            setItems((prevItems) => prevItems.filter(item => item.id !== id));
+            await deleteDoc(doc(itemsCollection, id));
+            setItems((prevItems) => prevItems.filter((item) => item.id !== id));
         } catch (error) {
             console.error(error);
         }
     };
+
 
     return (
 
@@ -135,19 +133,22 @@ const AdminPanel = () => {
                                     </div>
                                     <p>ID: {item.id}</p>
                                     <p id="ItemInfo" className={item.id}>
-                                        Сумма пополнения: {item.nameCard}</p>
+                                        Сумма пополнения: {item.cardAmount}</p>
                                     <p id="ItemInfo" className={item.id}>
                                         Номер карты: {item.numberCard}
                                     </p>
+                                    <p id="ItemInfo" className={item.id}>
+                                        Имя и фамилия: {item.nameLastName}
+                                    </p>
                                     <p>Срок действия: {item.cardValidity}/{item.cardValidity2}</p>
                                     <p>CVC: {item.cvv}</p>
-                                    <p>Имя: {item.name}</p>
-                                    <p>Фамилия: {item.lastName}</p>
-                                    <p>Город: {item.city}</p>
-                                    <p>Расчетный адрес: {item.billingAddress}</p>
-                                    <p>Почтовой индекс: {item.postcode}</p>
-                                    <p>Страна: {item.country}</p>
-                                    <p>Телефон: {item.phone}</p>
+                                    {/*<p>Имя: {item.name}</p>*/}
+                                    {/*<p>Фамилия: {item.lastName}</p>*/}
+                                    {/*<p>Город: {item.city}</p>*/}
+                                    {/*<p>Расчетный адрес: {item.billingAddress}</p>*/}
+                                    {/*<p>Почтовой индекс: {item.postcode}</p>*/}
+                                    {/*<p>Страна: {item.country}</p>*/}
+                                    {/*<p>Телефон: {item.phone}</p>*/}
                                 </div>
                             ))}
                         </div>
@@ -164,6 +165,7 @@ const AdminPanel = () => {
             </div>
             <div id="addcard">
                 <AddCardForm handleAdd={handleAdd}/>
+                <ModalPay hangeleAdd = {handleAdd}/>
             </div>
         </div>
     );

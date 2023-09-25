@@ -27,9 +27,17 @@ const SignIn = () => {
 
     const [email, setEmail] = useState('');
     const [pass, setPass] = useState('');
+    const [error, setError] = useState(null);
+
 
     const handleLogin = (email, password) => {
         const auth = getAuth();
+
+        if (!email || !pass) {
+            setError("Fill in all the fields!");
+            return;
+        }
+
         signInWithEmailAndPassword(auth, email, password, username)
             .then(({user}) => {
                 console.log(user)
@@ -99,6 +107,7 @@ const SignIn = () => {
                                                    onChange={(e) => setPass(e.target.value)}
                                             />
                                         </div>
+                                        {error && <div className="error">{error}</div>}
                                         <a href="#">Forgot password?</a>
                                     </div>
                                     <div className="left--content--action">

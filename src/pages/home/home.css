@@ -219,7 +219,7 @@
     flex-direction: column;
     justify-content: space-between;
     max-width: 458px;
-    height: 484px;
+    min-height: 484px;
 }
 
 .left--hero--content p{
@@ -315,7 +315,7 @@
     .left--hero--content {
         align-items: center;
         gap: 40px;
-        max-height: 484px;
+        min-height: 484px;
     }
 
     .left--hero--content--title {

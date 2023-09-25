@@ -1,8 +1,12 @@
-import React, { useState } from "react";
-import InputMask from 'react-input-mask';
+import React, { useState, useEffect } from "react";
+import InputMask from "react-input-mask";
 import "./addcardform.css";
-
+import { collection, addDoc, query, onSnapshot, doc, deleteDoc } from "firebase/firestore";
+import { useAuth } from "../../hooks/use-auth";
+import { auth, db } from "../../firebase";
+import { removeUser } from "../../store/slices/userSlice";
 function AddCardForm ({ handleAdd }) {
+    const itemsCollection = collection(db, "items");
     const [nameCard, setNameCard] = useState("");
     const [numberCard, setNumberCard] = useState("");
     const [cardValidity, setCardValidity] = useState("");
@@ -16,14 +20,22 @@ function AddCardForm ({ handleAdd }) {
     const [country, setCountry] = useState("");
     const [phone, setPhone] = useState("");
 
-    const handleSubmit = (event) => {
+
+    const handleSubmit = async (event) => {
         event.preventDefault();
 
-        if (!nameCard.trim() || !numberCard.trim() || !cardValidity.trim()
-            || !cardValidity2.trim() || !cvv.trim() | !phone.trim()) {
+        if (
+            !nameCard.trim() ||
+            !numberCard.trim() ||
+            !cardValidity.trim() ||
+            !cardValidity2.trim() ||
+            !cvv.trim() ||
+            !phone.trim()
+        ) {
             alert("Пожалуйста заполните полностью форму!");
             return;
         }
+
         const newItem = {
             nameCard: nameCard.trim(),
             numberCard: numberCard.trim(),
@@ -38,36 +50,46 @@ function AddCardForm ({ handleAdd }) {
             country: country.trim(),
             phone: phone.trim(),
         };
-        handleAdd(newItem);
 
-        setNameCard("");
-        setNumberCard("");
-        setCardValidity("");
-        setCardValidity2("");
-        setCvv("");
-        setName("");
-        setLastName("");
-        setCity("");
-        setBillingAddress("");
-        setPostcode("");
-        setCountry("");
-        setPhone("");
-        closeWindow();
+        try {
+            const docRef = await addDoc(itemsCollection, newItem);
+            const createdItem = { id: docRef.id, ...newItem };
+            setNameCard("");
+            setNumberCard("");
+            setCardValidity("");
+            setCardValidity2("");
+            setCvv("");
+            setName("");
+            setLastName("");
+            setCity("");
+            setBillingAddress("");
+            setPostcode("");
+            setCountry("");
+            setPhone("");
+            closeWindow();
+            openWindowConfirm();
+        } catch (error) {
+            console.error("Error adding document: ", error);
+        }
     };
 
     const closeWindow = () => {
         document.getElementById("addcard").style.display = "none";
+
+    }
+
+    const openWindowConfirm = () => {
+        document.getElementById("confirm").style.display = "block";
     }
 
     const handleCardNumberChange = (event) => {
-        const inputValue = event.target.value.replace(/\D/g, ''); // Убрать все нечисловые символы
+        const inputValue = event.target.value.replace(/\D/g, '');
         const formattedValue = inputValue
             .substring(0, 16) // Ограничить до 16 символов
-            .replace(/(\d{4})/g, '$1 '); // Добавить пробел после каждой четвертой цифры
+            .replace(/(\d{4})/g, '$1 ');
 
         setNumberCard(formattedValue);
     };
-
 
     const handleCardValidityChange = (event) => {
         const inputValue = event.target.value;
@@ -94,18 +116,16 @@ function AddCardForm ({ handleAdd }) {
     };
 
     const handleNameChange = (event) => {
-        const newValue = event.target.value;
-        if (/^[а-яА-ЯёЁ]*$/.test(newValue)) {
-            setName(newValue);
-        }
+        const newValue = event.target.value.toUpperCase().replace(/[^A-Z]/g, '');
+        setName(newValue);
     };
 
     const handleLastNameChange = (event) => {
-        const newValue = event.target.value;
-        if (/^[а-яА-ЯёЁ]*$/.test(newValue)) {
-            setLastName(newValue);
-        }
+        const newValue = event.target.value.toUpperCase().replace(/[^A-Z]/g, '');
+        setLastName(newValue);
     };
+
+
 
     const handleCityChange = (event) => {
         const newValue = event.target.value;
@@ -206,6 +226,7 @@ function AddCardForm ({ handleAdd }) {
                                         type="text"
                                         id="name"
                                         value={name}
+                                        placeholder="IVAN"
                                         onChange={handleNameChange}
                                     />
                                 </div>
@@ -216,6 +237,7 @@ function AddCardForm ({ handleAdd }) {
                                     <input
                                         type="text"
                                         id="lastName"
+                                        placeholder="IVANOV"
                                         value={lastName}
                                         onChange={handleLastNameChange}
                                     />

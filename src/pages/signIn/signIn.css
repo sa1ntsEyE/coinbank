@@ -234,6 +234,11 @@
 }
 
 @media (max-width: 480px) {
+
+    .signIn--left {
+        scroll-behavior: smooth
+    }
+
     .left--content--inputList {
         align-items: center;
     }
@@ -269,6 +274,7 @@
 
     .signUp--left--content {
         align-items: center;
+        justify-content: space-evenly;
     }
 
     .left--content--headline {
@@ -285,5 +291,15 @@
 
     .headline--text--subtitle {
         font-size: 14px;
+    }
+}
+
+@media (max-width: 375px) {
+    .signIn--left {
+        min-height: 0px;
+    }
+
+    .left--content--action {
+        height: 100px;
     }
 }

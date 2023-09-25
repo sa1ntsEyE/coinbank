@@ -1,6 +1,7 @@
-import React, {Component, useEffect, useState} from 'react';
-import {Link} from "react-router-dom";
-import axios from 'axios';
+import React, { useEffect, useState, useRef } from 'react';
+import { Link } from 'react-router-dom';
+import { Line } from 'react-chartjs-2';
+import { Chart, registerables } from 'chart.js';
 import {useDispatch} from "react-redux";
 import {useAuth} from "../../hooks/use-auth";
 import {signOut} from "firebase/auth";
@@ -9,6 +10,10 @@ import {removeUser} from "../../store/slices/userSlice";
 import AddCardForm from "../../components/AddCardForm/AddCardForm";
 import BurgerMenu from "../../components/BurgerMenu/BurgerMenu";
 import "../prices/prices.css"
+import ChangePercentage from "../../components/ChangePercentage/ChangePercentage";
+import ModalPay from "../../components/Modals/ModalPay/ModalPay";
+import ModalConfirm from "../../components/Modals/modalConfirm/modalConfirm";
+import CryptoPriceChart from "../../components/CryptoPriceChart/CryptoPriceChart";
 
 import logo from "../../assets/Logo2.png";
 import logo2 from "../../assets/Logo.png";
@@ -34,11 +39,15 @@ import dash from "../../assets/DASH.svg"
 
 
 const Prices = () => {
-    const url = "http://localhost:3001/message";
     const [items, setItems] = useState([]);
     const dispatch = useDispatch();
     const {isAuth, token, photo, name, nickname, username, email} = useAuth();
     const [tickerData, setTickerData] = useState(null);
+    const [priceData, setPriceData] = useState({});
+    const [currentPrice, setCurrentPrice] = useState(null);
+    const [previousPrice, setPreviousPrice] = useState(null);
+
+    Chart.register(...registerables);
 
     const fetchCryptoData = async () => {
         try {
@@ -53,20 +62,19 @@ const Prices = () => {
         }
     };
 
-// Запускаем fetchCryptoData сразу при монтировании компонента
+
     useEffect(() => {
         fetchCryptoData();
 
-        // Устанавливаем интервал для обновления данных каждые 30 секунд
         const intervalId = setInterval(() => {
             fetchCryptoData();
         }, 30000);
 
-        // Очищаем интервал при размонтировании компонента
         return () => {
             clearInterval(intervalId);
         };
     }, []);
+
 
     const logOut = () => {
         signOut(auth).then(() => {
@@ -77,38 +85,34 @@ const Prices = () => {
     }
 
     const openWindow = () => {
-        document.getElementById("addcard").style.display = "block";
+        document.getElementById("card-form").style.display = "block"
+        setTimeout(() => {
+            document.getElementById("card-form").style.transition = "opacity 0.3s ease";
+            document.getElementById("card-form").style.opacity = '1';
+        }, 10);
     }
-
-    const handleAdd = async (newItem) => {
-        try {
-            const response = await fetch(url, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(newItem),
-            });
-            const createdItem = await response.json();
-            setItems((prevItems) => [...prevItems, createdItem]);
-        } catch (error) {
-            console.error(error);
-        }
-    };
 
     function findPriceBySymbol(data, symbol) {
         if (data === null) {
-            return 'N/A'; // Возвращаем 'N/A', если data равно null
+            return 'Loading...';
         }
         const cryptoData = data.find(item => item.symbol === symbol);
-        return cryptoData ? cryptoData.price : 'N/A';
+        return cryptoData ? cryptoData.price : 'Loading...';
     }
+
+    const updatedTickerData = tickerData ? tickerData.map(item => {
+        const updatedPrice = parseFloat(item.price) * 0.9;
+        return { ...item, price: updatedPrice.toFixed(2) };
+    }) : [];
 
 
     return (
             <div>
                 <div className="wrapper">
                     <header>
+                        <ModalPay/>
+                        <ModalConfirm/>
+
                         <BurgerMenu/>
                         <div className="hero">
                             <div className="nav--main _container">
@@ -173,16 +177,18 @@ const Prices = () => {
                                         </div>
                                     </div>
                                     <div className="price--coin--chart">
-                                        <img src={chartCoin} alt=""/>
+                                        {['ETHUSDT'].map(symbol => (
+                                            <CryptoPriceChart key={symbol} symbol={symbol} />
+                                        ))}
                                     </div>
                                     <div className="price--coin--change">
                                         <div className="price--coin--change--title">
-                                            ${findPriceBySymbol(tickerData, 'ETHUSDT')}
+                                            ${findPriceBySymbol(updatedTickerData, 'ETHUSDT')}
+
                                         </div>
-                                        <div className="price--coin--change--subtitle">
-                                            <img src={arrow} alt=""/>
-                                            1.37%
-                                        </div>
+                                        {['ETHUSDT'].map(symbol => (
+                                            <ChangePercentage key={symbol} symbol={symbol} />
+                                        ))}
                                     </div>
                                 </div>
                                 <div className="price--coin--content--card">
@@ -200,16 +206,17 @@ const Prices = () => {
                                         </div>
                                     </div>
                                     <div className="price--coin--chart">
-                                        <img src={chartCoin} alt=""/>
+                                        {['BTCUSDT'].map(symbol => (
+                                            <CryptoPriceChart key={symbol} symbol={symbol} />
+                                        ))}
                                     </div>
                                     <div className="price--coin--change">
                                         <div className="price--coin--change--title">
-                                            ${findPriceBySymbol(tickerData, 'BTCUSDT')}
+                                            ${findPriceBySymbol(updatedTickerData, 'BTCUSDT')}
                                         </div>
-                                        <div className="price--coin--change--subtitle">
-                                            <img src={arrow} alt=""/>
-                                            1.37%
-                                        </div>
+                                        {['BTCUSDT'].map(symbol => (
+                                            <ChangePercentage key={symbol} symbol={symbol} />
+                                        ))}
                                     </div>
                                 </div>
                                 <div className="price--coin--content--card">
@@ -227,16 +234,17 @@ const Prices = () => {
                                         </div>
                                     </div>
                                     <div className="price--coin--chart">
-                                        <img src={chartCoin} alt=""/>
+                                        {['DOGEUSDT'].map(symbol => (
+                                            <CryptoPriceChart key={symbol} symbol={symbol} />
+                                        ))}
                                     </div>
                                     <div className="price--coin--change">
                                         <div className="price--coin--change--title">
-                                            ${findPriceBySymbol(tickerData, 'DOGEUSDT')}
+                                            ${findPriceBySymbol(updatedTickerData, 'DOGEUSDT')}
                                         </div>
-                                        <div className="price--coin--change--subtitle">
-                                            <img src={arrow} alt=""/>
-                                            1.37%
-                                        </div>
+                                        {['DOGEUSDT'].map(symbol => (
+                                            <ChangePercentage key={symbol} symbol={symbol} />
+                                        ))}
                                     </div>
                                 </div>
                                 <div className="price--coin--content--card">
@@ -254,16 +262,17 @@ const Prices = () => {
                                         </div>
                                     </div>
                                     <div className="price--coin--chart">
-                                        <img src={chartCoin} alt=""/>
+                                        {['XRPUSDT'].map(symbol => (
+                                            <CryptoPriceChart key={symbol} symbol={symbol} />
+                                        ))}
                                     </div>
                                     <div className="price--coin--change">
                                         <div className="price--coin--change--title">
-                                            ${findPriceBySymbol(tickerData, 'XRPUSDT')}
+                                            ${findPriceBySymbol(updatedTickerData, 'XRPUSDT')}
                                         </div>
-                                        <div className="price--coin--change--subtitle">
-                                            <img src={arrow} alt=""/>
-                                            1.37%
-                                        </div>
+                                        {['XRPUSDT'].map(symbol => (
+                                            <ChangePercentage key={symbol} symbol={symbol} />
+                                        ))}
                                     </div>
                                 </div>
                             </div>
@@ -308,19 +317,20 @@ const Prices = () => {
                                             </div>
                                         </div>
                                         <div className="table--prices--body--Price">
-                                            ${findPriceBySymbol(tickerData, 'BTCUSDT')}
+                                            ${findPriceBySymbol(updatedTickerData, 'BTCUSDT')}
                                         </div>
                                         <div className="table--prices--body--MarketCap">
-                                            $361.32B
+                                            $518,48B
                                         </div>
                                         <div className="table--prices--body--Change">
-                                           <div className="table--prices--body--change--percent">
-                                               <img src={arrow} alt=""/>
-                                               1.37%
-                                           </div>
+                                            {['BTCUSDT'].map(symbol => (
+                                                <ChangePercentage key={symbol} symbol={symbol} />
+                                            ))}
                                         </div>
                                         <div className="table--prices--body--Last">
-                                            <img src={stat} alt=""/>
+                                            {['BTCUSDT'].map(symbol => (
+                                                <CryptoPriceChart key={symbol} symbol={symbol} />
+                                            ))}
                                         </div>
                                         <div className="table--prices--body--Action">
                                             <button id="open" className="table--prices--body--Action--trade"
@@ -344,19 +354,20 @@ const Prices = () => {
                                             </div>
                                         </div>
                                         <div className="table--prices--body--Price">
-                                            ${findPriceBySymbol(tickerData, 'ETHUSDT')}
+                                            ${findPriceBySymbol(updatedTickerData, 'ETHUSDT')}
                                         </div>
                                         <div className="table--prices--body--MarketCap">
-                                            $158.77B
+                                            $191,87B
                                         </div>
                                         <div className="table--prices--body--Change">
-                                            <div className="table--prices--body--change--percent-2">
-                                                <img src={arrow2} alt=""/>
-                                                1.37%
-                                            </div>
+                                            {['ETHUSDT'].map(symbol => (
+                                                <ChangePercentage key={symbol} symbol={symbol} />
+                                            ))}
                                         </div>
                                         <div className="table--prices--body--Last">
-                                            <img src={stat2} alt=""/>
+                                            {['ETHUSDT'].map(symbol => (
+                                                <CryptoPriceChart key={symbol} symbol={symbol} />
+                                            ))}
                                         </div>
                                         <div className="table--prices--body--Action">
                                             <button id="open" className="table--prices--body--Action--trade"
@@ -380,19 +391,20 @@ const Prices = () => {
                                             </div>
                                         </div>
                                         <div className="table--prices--body--Price">
-                                            ${findPriceBySymbol(tickerData, 'XRPUSDT')}
+                                            ${findPriceBySymbol(updatedTickerData, 'XRPUSDT')}
                                         </div>
                                         <div className="table--prices--body--MarketCap">
-                                            $67.94B
+                                            $27,13B
                                         </div>
                                         <div className="table--prices--body--Change">
-                                            <div className="table--prices--body--change--percent">
-                                                <img src={arrow} alt=""/>
-                                                1.37%
-                                            </div>
+                                            {['XRPUSDT'].map(symbol => (
+                                                <ChangePercentage key={symbol} symbol={symbol} />
+                                            ))}
                                         </div>
                                         <div className="table--prices--body--Last">
-                                            <img src={stat} alt=""/>
+                                            {['XRPUSDT'].map(symbol => (
+                                                <CryptoPriceChart key={symbol} symbol={symbol} />
+                                            ))}
                                         </div>
                                         <div className="table--prices--body--Action">
                                             <button id="open" className="table--prices--body--Action--trade"
@@ -417,19 +429,20 @@ const Prices = () => {
                                             </div>
                                         </div>
                                         <div className="table--prices--body--Price">
-                                            ${findPriceBySymbol(tickerData, 'DOGEUSDT')}
+                                            ${findPriceBySymbol(updatedTickerData, 'DOGEUSDT')}
                                         </div>
                                         <div className="table--prices--body--MarketCap">
-                                            $49.91B
+                                            $8,591B
                                         </div>
                                         <div className="table--prices--body--Change">
-                                            <div className="table--prices--body--change--percent-2">
-                                                <img src={arrow2} alt=""/>
-                                                1.37%
-                                            </div>
+                                            {['DOGEUSDT'].map(symbol => (
+                                                <ChangePercentage key={symbol} symbol={symbol} />
+                                            ))}
                                         </div>
                                         <div className="table--prices--body--Last">
-                                            <img src={stat2} alt=""/>
+                                            {['DOGEUSDT'].map(symbol => (
+                                                <CryptoPriceChart key={symbol} symbol={symbol} />
+                                            ))}
                                         </div>
                                         <div className="table--prices--body--Action">
                                             <button id="open" className="table--prices--body--Action--trade"
@@ -454,19 +467,20 @@ const Prices = () => {
                                             </div>
                                         </div>
                                         <div className="table--prices--body--Price">
-                                            ${findPriceBySymbol(tickerData, 'DGBUSDT')}
+                                            ${findPriceBySymbol(updatedTickerData, 'DGBUSDT')}
                                         </div>
                                         <div className="table--prices--body--MarketCap">
                                             $44.34B
                                         </div>
                                         <div className="table--prices--body--Change">
-                                            <div className="table--prices--body--change--percent">
-                                                <img src={arrow} alt=""/>
-                                                1.37%
-                                            </div>
+                                            {['DGBUSDT'].map(symbol => (
+                                                <ChangePercentage key={symbol} symbol={symbol} />
+                                            ))}
                                         </div>
                                         <div className="table--prices--body--Last">
-                                            <img src={stat} alt=""/>
+                                            {['DGBUSDT'].map(symbol => (
+                                                <CryptoPriceChart key={symbol} symbol={symbol} />
+                                            ))}
                                         </div>
                                         <div className="table--prices--body--Action">
                                             <button id="open" className="table--prices--body--Action--trade"
@@ -491,19 +505,20 @@ const Prices = () => {
                                             </div>
                                         </div>
                                         <div className="table--prices--body--Price">
-                                            ${findPriceBySymbol(tickerData, 'SOLUSDT')}
+                                            ${findPriceBySymbol(updatedTickerData, 'SOLUSDT')}
                                         </div>
                                         <div className="table--prices--body--MarketCap">
                                             $30.31B
                                         </div>
                                         <div className="table--prices--body--Change">
-                                            <div className="table--prices--body--change--percent">
-                                                <img src={arrow} alt=""/>
-                                                1.37%
-                                            </div>
+                                            {['SOLUSDT'].map(symbol => (
+                                                <ChangePercentage key={symbol} symbol={symbol} />
+                                            ))}
                                         </div>
                                         <div className="table--prices--body--Last">
-                                            <img src={stat} alt=""/>
+                                            {['SOLUSDT'].map(symbol => (
+                                                <CryptoPriceChart key={symbol} symbol={symbol} />
+                                            ))}
                                         </div>
                                         <div className="table--prices--body--Action">
                                             <button id="open" className="table--prices--body--Action--trade"
@@ -512,7 +527,6 @@ const Prices = () => {
                                             </button>
                                         </div>
                                     </div>
-
                                     <div className="table--prices--card">
                                         <div className="table--prices--body--name">
                                             <div className="table--prices--body--name--img">
@@ -528,19 +542,20 @@ const Prices = () => {
                                             </div>
                                         </div>
                                         <div className="table--prices--body--Price">
-                                            ${findPriceBySymbol(tickerData, 'LTCUSDT')}
+                                            ${findPriceBySymbol(updatedTickerData, 'LTCUSDT')}
                                         </div>
                                         <div className="table--prices--body--MarketCap">
                                             $200.45B
                                         </div>
                                         <div className="table--prices--body--Change">
-                                            <div className="table--prices--body--change--percent">
-                                                <img src={arrow} alt=""/>
-                                                1.37%
-                                            </div>
+                                            {['LTCUSDT'].map(symbol => (
+                                                <ChangePercentage key={symbol} symbol={symbol} />
+                                            ))}
                                         </div>
                                         <div className="table--prices--body--Last">
-                                            <img src={stat} alt=""/>
+                                            {['LTCUSDT'].map(symbol => (
+                                                <CryptoPriceChart key={symbol} symbol={symbol} />
+                                            ))}
                                         </div>
                                         <div className="table--prices--body--Action">
                                             <button id="open" className="table--prices--body--Action--trade"
@@ -564,19 +579,20 @@ const Prices = () => {
                                             </div>
                                         </div>
                                         <div className="table--prices--body--Price">
-                                            ${findPriceBySymbol(tickerData, 'BNBUSDT')}
+                                            ${findPriceBySymbol(updatedTickerData, 'BNBUSDT')}
                                         </div>
                                         <div className="table--prices--body--MarketCap">
                                             $192.31B
                                         </div>
                                         <div className="table--prices--body--Change">
-                                            <div className="table--prices--body--change--percent-2">
-                                                <img src={arrow2} alt=""/>
-                                                1.37%
-                                            </div>
+                                            {['BNBUSDT'].map(symbol => (
+                                                <ChangePercentage key={symbol} symbol={symbol} />
+                                            ))}
                                         </div>
                                         <div className="table--prices--body--Last">
-                                            <img src={stat2} alt=""/>
+                                            {['BNBUSDT'].map(symbol => (
+                                                <CryptoPriceChart key={symbol} symbol={symbol} />
+                                            ))}
                                         </div>
                                         <div className="table--prices--body--Action">
                                             <button id="open" className="table--prices--body--Action--trade"
@@ -601,19 +617,20 @@ const Prices = () => {
                                             </div>
                                         </div>
                                         <div className="table--prices--body--Price">
-                                            ${findPriceBySymbol(tickerData, 'DASHUSDT')}
+                                            ${findPriceBySymbol(updatedTickerData, 'DASHUSDT')}
                                         </div>
                                         <div className="table--prices--body--MarketCap">
                                             $361.32B
                                         </div>
                                         <div className="table--prices--body--Change">
-                                            <div className="table--prices--body--change--percent">
-                                                <img src={arrow} alt=""/>
-                                                1.37%
-                                            </div>
+                                            {['DASHUSDT'].map(symbol => (
+                                                <ChangePercentage key={symbol} symbol={symbol} />
+                                            ))}
                                         </div>
                                         <div className="table--prices--body--Last">
-                                            <img src={stat} alt=""/>
+                                            {['DASHUSDT'].map(symbol => (
+                                                <CryptoPriceChart key={symbol} symbol={symbol} />
+                                            ))}
                                         </div>
                                         <div className="table--prices--body--Action">
                                             <button id="open" className="table--prices--body--Action--trade"
@@ -638,19 +655,20 @@ const Prices = () => {
                                             </div>
                                         </div>
                                         <div className="table--prices--body--Price">
-                                            ${findPriceBySymbol(tickerData, 'OGNUSDT')}
+                                            ${findPriceBySymbol(updatedTickerData, 'OGNUSDT')}
                                         </div>
                                         <div className="table--prices--body--MarketCap">
                                             $132.98B
                                         </div>
                                         <div className="table--prices--body--Change">
-                                            <div className="table--prices--body--change--percent">
-                                                <img src={arrow} alt=""/>
-                                                1.37%
-                                            </div>
+                                            {['OGNUSDT'].map(symbol => (
+                                                <ChangePercentage key={symbol} symbol={symbol} />
+                                            ))}
                                         </div>
                                         <div className="table--prices--body--Last">
-                                            <img src={stat} alt=""/>
+                                            {['OGNUSDT'].map(symbol => (
+                                                <CryptoPriceChart key={symbol} symbol={symbol} />
+                                            ))}
                                         </div>
                                         <div className="table--prices--body--Action">
                                             <button id="open" className="table--prices--body--Action--trade"
@@ -664,7 +682,7 @@ const Prices = () => {
                         </div>
                     </section>
                     <div id="addcard">
-                        <AddCardForm handleAdd={handleAdd}/>
+                        <AddCardForm />
                     </div>
                 </div>
             </div>

@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {
     createUserWithEmailAndPassword,
+    fetchSignInMethodsForEmail,
     updateProfile,
     getAuth,
     GoogleAuthProvider,
@@ -19,7 +20,6 @@ import facebook from "../../assets/facebook.png";
 import Right2 from "../../assets/Right2.png";
 
 
-
 const SignUp = () => {
     const dispatch = useDispatch();
     const push = useNavigate();
@@ -28,23 +28,53 @@ const SignUp = () => {
     const [email, setEmail] = useState('');
     const [pass, setPass] = useState('');
     const [user, setUsername] = useState('');
+    const [error, setError] = useState(null);
 
     const handleRegister = (email, password, username, phone) => {
         const auth = getAuth();
-        createUserWithEmailAndPassword(auth, email, password, username)
-            .then(({user}) => {
-                updateProfile(user, {
-                    displayName: username,
-                })
-                dispatch(setUser({
-                    email: user.email,
-                    id: user.uid,
-                    token: user.accessToken,
-                    username: user.displayName,
-                }));
-                push('/');
+
+        if (!email || !password || !username) {
+            setError("Fill in all the fields!");
+            return;
+        }
+
+        if (username.length < 4) {
+            setError("Min username 4 length");
+            return;
+        }
+
+        if (password.length < 6) {
+            setError("Min password 6 length");
+            return;
+        }
+
+
+
+        fetchSignInMethodsForEmail(auth, email)
+            .then((methods) => {
+                if (methods.length > 0) {
+                    setError("This email is already registered.");
+                } else {
+                    // Если пользователя с таким email нет, создаем аккаунт
+                    createUserWithEmailAndPassword(auth, email, password, username)
+                        .then(({ user }) => {
+                            updateProfile(user, {
+                                displayName: username,
+                            });
+                            dispatch(setUser({
+                                email: user.email,
+                                id: user.uid,
+                                token: user.accessToken,
+                                username: user.displayName,
+                            }));
+                            push('/');
+                        })
+                        .catch((error) => {
+                            setError(error.message);
+                        });
+                }
             })
-            .catch(console.error)
+            .catch(console.error);
     }
 
     const provider2 = new GoogleAuthProvider();
@@ -83,6 +113,7 @@ const SignUp = () => {
                                     </div>
                                 </div>
                                 <div className="left--content--inputList--2">
+
                                     <div className="content--inputList--name">
                                         Name
                                         <input type="text"
@@ -107,6 +138,7 @@ const SignUp = () => {
                                                onChange={(e) => setPass(e.target.value)}
                                         />
                                     </div>
+                                    {error && <div className="error">{error}</div>}
                                     <a href="#">Forgot password?</a>
                                 </div>
                                 <div className="left--content--action">

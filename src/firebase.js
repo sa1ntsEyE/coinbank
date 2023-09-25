@@ -1,9 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getStorage } from "firebase/storage";
 import { getAuth } from "firebase/auth";
-import { getFirestore, collection } from "firebase/firestore";
-import 'firebase/database';
-import 'firebase/firestore';
+import { getFirestore, collection, addDoc, deleteDoc, doc } from "firebase/firestore";
 
 const firebaseConfig = {
     apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -18,5 +16,6 @@ const app = initializeApp(firebaseConfig);
 const storage = getStorage(app);
 const auth = getAuth(app);
 const db = getFirestore(app);
-const itemsCollection = collection(db, 'items'); // Use collection method to reference the 'items' collection
-export { auth, storage, db, itemsCollection };
+const itemsCollection = collection(db, 'items');
+
+export { auth, storage, db, itemsCollection, addDoc, deleteDoc, doc };
