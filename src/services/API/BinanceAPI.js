@@ -10,7 +10,6 @@ function BinanceTicker() {
                 const response = await axios.get('https://api.binance.com/api/v3/ticker/price');
                 const price = response.data.price;
 
-                // Установите цену в состояние компонента
                 setTickerPrice(price);
             } catch (error) {
                 console.error('Ошибка при получении данных:', error);

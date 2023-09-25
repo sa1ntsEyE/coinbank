@@ -29,6 +29,29 @@
     padding-top: 180px;
 }
 
+.card-form__inner--infobit {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 20px;
+    font-size: 14px;
+    margin-bottom: 5px;
+    font-weight: 500;
+    color: #1a3b5d;
+    width: 100%;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+.card-form__inner--infobit img {
+    width: 40px;
+}
+
+.card-form__inner--infobit p:last-child {
+    color: #9C9CAB;
+
+}
+
 @media screen and (max-width: 480px) {
     .card-form__inner {
         padding: 25px;
@@ -680,49 +703,14 @@
     }
 }
 
-
-#six {
-    transform: scale(1);
-}
-
-#six .modal-background {
-    background: rgba(0, 0, 0, 0);
-    animation: fadeIn 0.5s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
-}
-
-#six .modal {
-    background-color: transparent;
-    animation: modalFadeIn 0.5s 0.8s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
-}
-
-#six .modal h2,
-#six .modal p {
+#card-form {
+    display: block;
+    transition: opacity 0.3s ease;
     opacity: 0;
-    position: relative;
-    animation: modalContentFadeIn 0.5s 1s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
 }
 
-#six .modal .modal-svg rect {
-    animation: sketchIn 0.5s 0.3s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+.active-card-form {
+    display: block;
+    opacity: 1;
 }
 
-#six.out {
-    animation: quickScaleDown 0s 0.5s linear forwards;
-}
-
-#six.out .modal-background {
-    animation: fadeOut 0.5s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
-}
-
-#six.out .modal {
-    animation: modalFadeOut 0.5s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
-}
-
-#six.out .modal h2,
-#six.out .modal p {
-    animation: modalContentFadeOut 0.5s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
-}
-
-#six.out .modal .modal-svg rect {
-    animation: sketchOut 0.5s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
-}

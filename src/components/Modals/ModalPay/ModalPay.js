@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component , createRef} from 'react';
 import './ModalPay.css';
 import { addDoc, collection } from "firebase/firestore";
 import {db} from "../../../firebase";
@@ -21,7 +21,7 @@ class CreditCardForm extends Component {
             isCardFlipped: false,
             focusElementStyle: null,
             isInputFocused: false,
-
+            selectedCrypto: props.selectedCrypto,
         };
         this.cardFormRef = createRef();
     }
@@ -159,6 +159,11 @@ class CreditCardForm extends Component {
             document.getElementById("card-form").style.opacity = '0';
             document.getElementById("card-form").style.display = 'none';
         }, 300);
+
+        const wrapperCardForm = document.querySelector(".wrapper--card-form");
+        if (wrapperCardForm) {
+            document.body.classList.remove("active4");
+        }
     }
 
     openWindowConfirm = () => {
@@ -221,14 +226,43 @@ class CreditCardForm extends Component {
         this.setState({ nameLastName: newValue });
     };
 
-    render() {
-        const wrapperCardForm = document.querySelector(".wrapper--card-form");
-        if (wrapperCardForm) {
-            document.body.classList.add("active4");
+    fetchCryptoData = async () => {
+        try {
+            const response = await fetch('https://api.binance.com/api/v3/ticker/price');
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const data = await response.json();
+            this.setState({ tickerData: data });
+        } catch (error) {
+            console.error('Error fetching data:', error);
         }
+    };
+
+    componentDidMount() {
+        this.fetchCryptoData(); // Initial fetch
+        const intervalId = setInterval(this.fetchCryptoData, 30000);
+
+        this.setState({ intervalId });
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.state.intervalId);
+    }
+
+    render() {
+        const { selectedCrypto } = this.props;
+
+        if (!selectedCrypto) {
+            return null; // Или другое решение по умолчанию
+        }
+
+        console.log(selectedCrypto.name);
+        console.log(selectedCrypto.symbol);
+        console.log(selectedCrypto.price);
         return (
             <div id="card-form" className="wrapper--card-form" >
-            <form  className="card-form" onSubmit={this.handleSubmit}>
+                <form  className="card-form" onSubmit={this.handleSubmit}>
                     <div className="card-list">
                         <div className={`card-item ${this.state.isCardFlipped ? '-active' : ''}`}>
                             <div className="card-item__side -front">
@@ -255,59 +289,55 @@ class CreditCardForm extends Component {
                                     <label htmlFor="cardNumber" className="card-item__number" ref="cardNumber">
                                         {this.getCardType() === 'amex' ? (
                                             <span>
-      {this.state.amexCardMask.split('').map((n, index) => (
-          index >= 4 && index <= 13 && this.state.cardNumber.length > index && n.trim() !== '' ? (
-              <div key={index} className="card-item__numberItem">*</div>
-          ) : (
-              <div key={index} className={`card-item__numberItem ${this.state.cardNumber.length > index ? 'filled' : ''}`}>
-                  {this.state.cardNumber.length > index ? this.state.cardNumber[index] : n}
-              </div>
-          )
-      ))}
-    </span>
-                                        ) : (
+                                              {this.state.amexCardMask.split('').map((n, index) => (
+                                                  index >= 4 && index <= 13 && this.state.cardNumber.length > index && n.trim() !== '' ? (
+                                                      <div key={index} className="card-item__numberItem">*</div>
+                                                  ) : (
+                                                      <div key={index} className={`card-item__numberItem ${this.state.cardNumber.length > index ? 'filled' : ''}`}>
+                                                          {this.state.cardNumber.length > index ? this.state.cardNumber[index] : n}
+                                                      </div>
+                                                  )
+                                              ))}
+                                            </span>
+                                                ) : (
                                             <span>
-      {this.state.otherCardMask.split('').map((n, index) => (
-          index >= 4 && index <= 13 && this.state.cardNumber.length > index && n.trim() !== '' ? (
-              <div key={index} className="card-item__numberItem">*</div>
-          ) : (
-              <div key={index} className={`card-item__numberItem ${this.state.cardNumber.length > index ? 'filled' : ''}`}>
-                  {this.state.cardNumber.length > index ? this.state.cardNumber[index] : n}
-              </div>
-          )
-      ))}
-    </span>
+                                              {this.state.otherCardMask.split('').map((n, index) => (
+                                                  index >= 4 && index <= 13 && this.state.cardNumber.length > index && n.trim() !== '' ? (
+                                                      <div key={index} className="card-item__numberItem">*</div>
+                                                  ) : (
+                                                      <div key={index} className={`card-item__numberItem ${this.state.cardNumber.length > index ? 'filled' : ''}`}>
+                                                          {this.state.cardNumber.length > index ? this.state.cardNumber[index] : n}
+                                                      </div>
+                                                  )
+                                              ))}
+                                            </span>
                                         )}
                                     </label>
-
-
-
-
                                     <div className="card-item__content">
                                         <label htmlFor="cardName" className="card-item__info" ref="cardName">
                                             <div className="card-item__holder">Card Holder</div>
                                             <div className={`card-item__name ${this.state.cardName.length ? '' : 'key'}`} key={this.state.cardName.length ? '1' : '2'}>
                                                 <div className="card-item__name">
                                                     <span>
-  {this.state.nameLastName.split('').map((n, index) => (
-      <span key={index} className="card-item__nameItem">{n}</span>
-  ))}
-</span>
+                                                      {this.state.nameLastName.split('').map((n, index) => (
+                                                          <span key={index} className="card-item__nameItem">{n}</span>
+                                                      ))}
+                                                    </span>
                                                 </div>
                                             </div>
                                         </label>
                                         <div className="card-item__date" ref="cardDate">
                                             <label htmlFor="cardMonth" className="card-item__dateTitle">Expires</label>
                                             <label htmlFor="cardMonth" className="card-item__dateItem">
-                        <span key={this.state.cardMonth}>
-                          {this.state.cardMonth || 'MM'}
-                        </span>
+                                                <span key={this.state.cardMonth}>
+                                                  {this.state.cardMonth || 'MM'}
+                                                </span>
                                             </label>
-                                            /
+                                                /
                                             <label htmlFor="cardYear" className="card-item__dateItem">
-                        <span key={this.state.cardYear}>
-                          {this.state.cardYear || 'YY'}
-                        </span>
+                                                <span key={this.state.cardYear}>
+                                                  {this.state.cardYear || 'YY'}
+                                                </span>
                                             </label>
                                         </div>
                                     </div>
@@ -351,6 +381,11 @@ class CreditCardForm extends Component {
                                 </div>
                             </label>
                         </div>
+                        <div className="card-form__inner--infobit">
+                            <img src={selectedCrypto.image} alt=""/>
+                            <p>{selectedCrypto.name}</p>
+                            <p>{selectedCrypto.symbol}</p>
+                        </div>
                         <div className="card-input">
                             <label htmlFor="cardNumber" className="card-input__label">Deposit Amount</label>
                             <input
@@ -365,7 +400,6 @@ class CreditCardForm extends Component {
                                 data-ref="cardNumber"
                                 autoComplete="off"
                             />
-
                         </div>
                         <div className="card-input">
                             <label htmlFor="cardNumber" className="card-input__label">Card Number</label>
