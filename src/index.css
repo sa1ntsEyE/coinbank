@@ -8,6 +8,15 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  padding: 0 calc(15px - (100vw - 100%)) 0 0;
+}
+
+
+
+@media (max-width: 768px) {
+  body {
+    padding: 0;
+  }
 }
 
 code {
@@ -28,6 +37,11 @@ ul, li {
 
 ._container2 {
   max-width: 1440px;
+  margin: 0 auto;
+}
+
+._container3 {
+  max-width: 1120px;
   margin: 0 auto;
 }
 

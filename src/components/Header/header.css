@@ -1,0 +1,22 @@
+.headers__text {
+    position: relative;
+
+}
+
+.headers__text div {
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.headers__text--balance span{
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    cursor: pointer;
+}
+
+.headers__text--balance img{
+    width: 20px;
+}

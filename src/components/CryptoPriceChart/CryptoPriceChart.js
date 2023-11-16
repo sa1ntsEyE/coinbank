@@ -89,7 +89,7 @@ const CryptoPriceChart = ({ symbol }) => {
 
 
     return (
-        <div className="crypto-price-chart"  style={{ maxWidth: '228px', maxHeight: '70px'}}>
+        <div className="crypto-price-chart"  style={{ width: '228px', height: '70px'}}>
             <Line data={chartData} options={chartOptions} />
         </div>
     );

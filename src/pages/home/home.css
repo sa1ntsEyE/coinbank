@@ -19,8 +19,14 @@
     font-family: "Poppins";
     font-size: 14px;
     font-style: normal;
-    font-weight: 400;
+    font-weight: 500;
     line-height: 145%;
+
+}
+
+.nav--main ul li:hover {
+    color: blue;
+    transition: ease 300ms;
 }
 
 .left--nav--white {
@@ -286,6 +292,7 @@
 }
 
 .left--hero--content--started {
+    cursor: pointer;
     width: 133px;
     height: 48px;
     border-radius: 8px;

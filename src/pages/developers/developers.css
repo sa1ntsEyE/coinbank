@@ -1,0 +1,161 @@
+.forDevelopers--content--main {
+    background: url("../../assets/back2.png") 50%/cover no-repeat;
+    display: flex;
+    justify-content: center;
+    padding: 64px 0 180px 0;
+}
+
+.forDevelopers--content--main--info {
+    max-width: 608px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+}
+
+.forDevelopers--content--main--info--title {
+    color: #5235E8;
+    text-align: center;
+    font-feature-settings: 'ss06' on;
+    font-family: "Poppins";
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 140%;
+    letter-spacing: 0.56px;
+    text-transform: uppercase;
+}
+
+.forDevelopers--content--main--info--subtitle {
+    color: #0E0637;
+    text-align: center;
+    font-feature-settings: 'ss06' on;
+    font-family: "Poppins";
+    font-size: 64px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 110%;
+    letter-spacing: -0.64px;
+}
+
+.forDevelopers--content--main--info--subtitle--2 {
+    color: #717184;
+    text-align: center;
+    font-feature-settings: 'ss06' on;
+    font-family: "Poppins";
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 155%;
+}
+
+.forDevelopers--content--main--info--button {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+
+}
+
+@media (max-width: 340px) {
+    .forDevelopers--content--main--info--button {
+        flex-direction: column;
+        align-items: center;
+    }
+}
+
+.forDevelopers--content--main--info--button button:first-child{
+    display: flex;
+    padding: 11px 24px;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    border-radius: 8px;
+    background: #5235E8;
+    color: #FFF;
+    font-feature-settings: 'ss06' on;
+    font-family: "Poppins";
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 160%;
+    letter-spacing: 0.08px;
+    border: 0;
+    cursor: pointer;
+}
+
+.forDevelopers--content--main--info--button button:last-child {
+    display: flex;
+    padding: 11px 24px;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    border-radius: 8px;
+    border: 1px solid #D6D1FA;
+    background:  #FFF;
+    color: #5235E8;
+    font-feature-settings: 'ss06' on;
+    font-family: "Poppins";
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 160%;
+    letter-spacing: 0.08px;
+    cursor: pointer;
+}
+
+.devFeatures--content--main {
+    padding: 100px 0 94px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+
+@media (max-width: 720px) {
+    .devFeatures--content--main {
+        flex-direction: column;
+        text-align: center;
+    }
+}
+
+.devFeatures--content--right {
+    display: flex;
+    flex-direction: column;
+    max-width: 448px;
+    gap: 16px;
+}
+
+.devFeatures--content--right--title {
+    color: #5235E8;
+    font-feature-settings: 'ss06' on;
+    font-family: "Poppins";
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 140%;
+    letter-spacing: 0.56px;
+    text-transform: uppercase;
+}
+
+.devFeatures--content--right--subtitle {
+    color: #0E0637;
+    font-feature-settings: 'ss06' on;
+    font-family: "Poppins";
+    font-size: 40px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 140%;
+    letter-spacing: -0.4px;
+}
+
+.devFeatures--content--right--subtitle--2 {
+    color: #717184;
+    font-feature-settings: 'ss06' on;
+    font-family: "Poppins";
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 160%;
+    letter-spacing: 0.08px;
+}
+

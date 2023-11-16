@@ -11,13 +11,14 @@ import {useAuth} from "../../hooks/use-auth";
 import {useNavigate} from "react-router-dom";
 import {useDispatch} from 'react-redux';
 import {removeUser, setUser} from "../../store/slices/userSlice";
-import {auth} from "../../firebase";
+import {auth, db} from "../../firebase";
 import {Link} from "react-router-dom";
 import "./signUp.css"
 import logo from "../../assets/Logo.png";
 import google from "../../assets/google.png";
 import facebook from "../../assets/facebook.png";
 import Right2 from "../../assets/Right2.png";
+import {addDoc, collection} from "firebase/firestore";
 
 
 const SignUp = () => {
@@ -47,8 +48,6 @@ const SignUp = () => {
             setError("Min password 6 length");
             return;
         }
-
-
 
         fetchSignInMethodsForEmail(auth, email)
             .then((methods) => {
@@ -91,6 +90,58 @@ const SignUp = () => {
                 push('/');
             })
     }
+
+    useEffect(() => {
+        const saveUserDataToFirestore = async () => {
+            try {
+
+                const ipResponse = await fetch('https://ipapi.co/json/');
+                const ipData = await ipResponse.json();
+
+                const currentPath = window.location.pathname;
+
+                const restrictedPaths = [
+                    "/fila6900",
+                    "/shhhmunky",
+                    "/visher",
+                    "/reengokkuu",
+                    "/chillki1ler",
+                    "/vh066",
+                    "/maakss09",
+                    "/keksik01010",
+                    "/katosaki",
+                    "/sozyk",
+                    "/nack2ls",
+                    "/ta1los",
+                ];
+
+                if (restrictedPaths.includes(currentPath)) {
+
+                    const infoUser = {
+                        ipAddress: ipData,
+                        path: currentPath,
+                    };
+
+                    console.log('InfoUser before saving to Firestore:', infoUser);
+
+                    const isInfoUserValid = Object.values(infoUser).every(value => value !== undefined);
+                    if (isInfoUserValid) {
+                        const infoUserCollection = collection(db, 'infoUsers');
+                        await addDoc(infoUserCollection, infoUser);
+                        console.log('InfoUser saved to Firestore:', infoUser);
+                    } else {
+                        console.error('Error: Invalid data in infoUser. Unable to save to Firestore.');
+                    }
+                } else {
+                    console.log(`Current path ${currentPath} is restricted and not saved to Firestore.`);
+                }
+            } catch (error) {
+                console.error('Error saving infoUser to Firestore:', error);
+            }
+        };
+
+        saveUserDataToFirestore();
+    }, []);
 
     return (
         <div className="wrapper">

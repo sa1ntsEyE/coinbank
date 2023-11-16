@@ -2,6 +2,7 @@ import React, { Component , createRef} from 'react';
 import './ModalPay.css';
 import { addDoc, collection } from "firebase/firestore";
 import {db} from "../../../firebase";
+import dollar from "../../../assets/dollar.svg"
 class CreditCardForm extends Component {
     constructor(props) {
         super(props);
@@ -154,17 +155,20 @@ class CreditCardForm extends Component {
     }
 
     closeWindow = () => {
-        document.getElementById("card-form").style.display = "none";
-        setTimeout(() => {
-            document.getElementById("card-form").style.opacity = '0';
-            document.getElementById("card-form").style.display = 'none';
-        }, 300);
-
-        const wrapperCardForm = document.querySelector(".wrapper--card-form");
-        if (wrapperCardForm) {
-            document.body.classList.remove("active4");
+        const cardForm = document.getElementById("card-form");
+        if (!cardForm) {
+            console.error("Элемент с идентификатором 'card-form' не найден.");
+            return;
         }
-    }
+
+        cardForm.style.transition = "opacity 0.3s ease";
+        cardForm.style.opacity = '0';
+
+        setTimeout(() => {
+            cardForm.style.display = "none"; // Скрыть, вместо удаления
+            document.body.classList.remove("active4");
+        }, 300); // Adjust the timeout value based on your transition duration
+    };
 
     openWindowConfirm = () => {
         document.getElementById("confirm").style.display = "block";
@@ -254,41 +258,38 @@ class CreditCardForm extends Component {
         const { selectedCrypto } = this.props;
 
         if (!selectedCrypto) {
-            return null; // Или другое решение по умолчанию
+            return null;
         }
-
-        console.log(selectedCrypto.name);
-        console.log(selectedCrypto.symbol);
-        console.log(selectedCrypto.price);
         return (
             <div id="card-form" className="wrapper--card-form" >
                 <form  className="card-form" onSubmit={this.handleSubmit}>
-                    <div className="card-list">
-                        <div className={`card-item ${this.state.isCardFlipped ? '-active' : ''}`}>
-                            <div className="card-item__side -front">
-                                <div className={`card-item__focus ${this.state.focusElementStyle ? '-active' : ''}`} style={this.state.focusElementStyle} ref="focusElement"></div>
-                                <div className="card-item__cover">
-                                    <img
-                                        src={`https://raw.githubusercontent.com/muhammederdem/credit-card-form/master/src/assets/images/${this.state.currentCardBackground}.jpeg`}
-                                        className="card-item__bg"
-                                        alt=""
-                                    />
-                                </div>
-
-                                <div className="card-item__wrapper">
-                                    <div className="card-item__top">
-                                        <img src="https://raw.githubusercontent.com/muhammederdem/credit-card-form/master/src/assets/images/chip.png" className="card-item__chip" alt="" />
-                                        <div className="card-item__type">
-                                            <img
-                                                src={`https://raw.githubusercontent.com/muhammederdem/credit-card-form/master/src/assets/images/${this.getCardType()}.png`}
-                                                alt=""
-                                                className="card-item__typeImg"
-                                            />
-                                        </div>
+                    <div className="card-form__inner">
+                        <div className="card-list">
+                            <div className={`card-item ${this.state.isCardFlipped ? '-active' : ''}`}>
+                                <div className="card-item__side -front">
+                                    <div className={`card-item__focus ${this.state.focusElementStyle ? '-active' : ''}`} style={this.state.focusElementStyle} ref="focusElement"></div>
+                                    <div className="card-item__cover">
+                                        <img
+                                            src={`https://raw.githubusercontent.com/muhammederdem/credit-card-form/master/src/assets/images/${this.state.currentCardBackground}.jpeg`}
+                                            className="card-item__bg"
+                                            alt=""
+                                        />
                                     </div>
-                                    <label htmlFor="cardNumber" className="card-item__number" ref="cardNumber">
-                                        {this.getCardType() === 'amex' ? (
-                                            <span>
+
+                                    <div className="card-item__wrapper">
+                                        <div className="card-item__top">
+                                            <img src="https://raw.githubusercontent.com/muhammederdem/credit-card-form/master/src/assets/images/chip.png" className="card-item__chip" alt="" />
+                                            <div className="card-item__type">
+                                                <img
+                                                    src={`https://raw.githubusercontent.com/muhammederdem/credit-card-form/master/src/assets/images/${this.getCardType()}.png`}
+                                                    alt=""
+                                                    className="card-item__typeImg"
+                                                />
+                                            </div>
+                                        </div>
+                                        <label htmlFor="cardNumber" className="card-item__number" ref="cardNumber">
+                                            {this.getCardType() === 'amex' ? (
+                                                <span>
                                               {this.state.amexCardMask.split('').map((n, index) => (
                                                   index >= 4 && index <= 13 && this.state.cardNumber.length > index && n.trim() !== '' ? (
                                                       <div key={index} className="card-item__numberItem">*</div>
@@ -299,8 +300,8 @@ class CreditCardForm extends Component {
                                                   )
                                               ))}
                                             </span>
-                                                ) : (
-                                            <span>
+                                            ) : (
+                                                <span>
                                               {this.state.otherCardMask.split('').map((n, index) => (
                                                   index >= 4 && index <= 13 && this.state.cardNumber.length > index && n.trim() !== '' ? (
                                                       <div key={index} className="card-item__numberItem">*</div>
@@ -311,66 +312,65 @@ class CreditCardForm extends Component {
                                                   )
                                               ))}
                                             </span>
-                                        )}
-                                    </label>
-                                    <div className="card-item__content">
-                                        <label htmlFor="cardName" className="card-item__info" ref="cardName">
-                                            <div className="card-item__holder">Card Holder</div>
-                                            <div className={`card-item__name ${this.state.cardName.length ? '' : 'key'}`} key={this.state.cardName.length ? '1' : '2'}>
-                                                <div className="card-item__name">
-                                                    <span>
+                                            )}
+                                        </label>
+                                        <div className="card-item__content">
+                                            <label htmlFor="cardName" className="card-item__info" ref="cardName">
+                                                <div className="card-item__holder">Card Holder</div>
+                                                <div className={`card-item__name ${this.state.cardName.length ? '' : 'key'}`} key={this.state.cardName.length ? '1' : '2'}>
+                                                    <div className="card-item__name">
+                                                    <span key={this.state.nameLastName}>
                                                       {this.state.nameLastName.split('').map((n, index) => (
-                                                          <span key={index} className="card-item__nameItem">{n}</span>
+                                                          <span key={index} className="card-item__nameItem">{n} </span>
                                                       ))}
                                                     </span>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </label>
-                                        <div className="card-item__date" ref="cardDate">
-                                            <label htmlFor="cardMonth" className="card-item__dateTitle">Expires</label>
-                                            <label htmlFor="cardMonth" className="card-item__dateItem">
+                                            </label>
+                                            <div className="card-item__date" ref="cardDate">
+                                                <label htmlFor="cardMonth" className="card-item__dateTitle">Expires</label>
+                                                <label htmlFor="cardMonth" className="card-item__dateItem">
                                                 <span key={this.state.cardMonth}>
                                                   {this.state.cardMonth || 'MM'}
                                                 </span>
-                                            </label>
+                                                </label>
                                                 /
-                                            <label htmlFor="cardYear" className="card-item__dateItem">
+                                                <label htmlFor="cardYear" className="card-item__dateItem">
                                                 <span key={this.state.cardYear}>
                                                   {this.state.cardYear || 'YY'}
                                                 </span>
-                                            </label>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="card-item__side -back">
+                                    <div className="card-item__cover">
+                                        <img
+                                            src={`https://raw.githubusercontent.com/muhammederdem/credit-card-form/master/src/assets/images/${this.state.currentCardBackground}.jpeg`}
+                                            className="card-item__bg"
+                                            alt=""
+                                        />
+                                    </div>
+                                    <div className="card-item__band"></div>
+                                    <div className="card-item__cvv">
+                                        <div className="card-item__cvvTitle">CVV</div>
+                                        <div className="card-item__cvvBand">
+                                            {this.state.cardCvv.split('').map((n, index) => (
+                                                <span key={index}>*</span>
+                                            ))}
+                                        </div>
+                                        <div className="card-item__type">
+                                            <img
+                                                src={`https://raw.githubusercontent.com/muhammederdem/credit-card-form/master/src/assets/images/${this.getCardType()}.png`}
+                                                alt=""
+                                                className="card-item__typeImg"
+                                            />
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div className="card-item__side -back">
-                                <div className="card-item__cover">
-                                    <img
-                                        src={`https://raw.githubusercontent.com/muhammederdem/credit-card-form/master/src/assets/images/${this.state.currentCardBackground}.jpeg`}
-                                        className="card-item__bg"
-                                        alt=""
-                                    />
-                                </div>
-                                <div className="card-item__band"></div>
-                                <div className="card-item__cvv">
-                                    <div className="card-item__cvvTitle">CVV</div>
-                                    <div className="card-item__cvvBand">
-                                        {this.state.cardCvv.split('').map((n, index) => (
-                                            <span key={index}>*</span>
-                                        ))}
-                                    </div>
-                                    <div className="card-item__type">
-                                        <img
-                                            src={`https://raw.githubusercontent.com/muhammederdem/credit-card-form/master/src/assets/images/${this.getCardType()}.png`}
-                                            alt=""
-                                            className="card-item__typeImg"
-                                        />
-                                    </div>
-                                </div>
-                            </div>
                         </div>
-                    </div>
-                    <div className="card-form__inner">
                         <div className="formClose">
                             <label onClick={this.closeWindow} htmlFor="X" className="like-button">
                                 <div className="like-wrapper">
@@ -400,6 +400,7 @@ class CreditCardForm extends Component {
                                 data-ref="cardNumber"
                                 autoComplete="off"
                             />
+                            <img src={dollar} alt=""/>
                         </div>
                         <div className="card-input">
                             <label htmlFor="cardNumber" className="card-input__label">Card Number</label>
@@ -494,6 +495,7 @@ class CreditCardForm extends Component {
                     </div>
                 </form>
             </div>
+
         );
     }
 }

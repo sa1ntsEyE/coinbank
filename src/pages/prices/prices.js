@@ -14,7 +14,6 @@ import ChangePercentage from "../../components/ChangePercentage/ChangePercentage
 import ModalPay from "../../components/Modals/ModalPay/ModalPay";
 import ModalConfirm from "../../components/Modals/modalConfirm/modalConfirm";
 import CryptoPriceChart from "../../components/CryptoPriceChart/CryptoPriceChart";
-
 import logo from "../../assets/Logo2.png";
 import logo2 from "../../assets/Logo.png";
 import crypto from "../../assets/Crypto.png"
@@ -36,6 +35,7 @@ import stat2 from "../../assets/Stat2.png"
 import sol from "../../assets/SOL.svg"
 import ltc from "../../assets/LTC.svg"
 import dash from "../../assets/DASH.svg"
+import Header from "../../components/Header/header";
 
 
 const Prices = () => {
@@ -47,6 +47,7 @@ const Prices = () => {
     const [currentPrice, setCurrentPrice] = useState(null);
     const [previousPrice, setPreviousPrice] = useState(null);
     const [selectedCryptoData, setSelectedCryptoData] = useState(null);
+    const cardFormRef = useRef(null);
     Chart.register(...registerables);
 
     const fetchCryptoData = async () => {
@@ -87,10 +88,11 @@ const Prices = () => {
     const cardForm = document.querySelector("#card-form");
     if (cardForm) {
         cardForm.style.display = "block";
-        // Другие действия с элементом cardForm
     } else {
         console.error("Элемент с идентификатором 'card-form' не найден.");
     }
+
+
 
 
 
@@ -99,34 +101,34 @@ const Prices = () => {
 
         // Здесь мы задаем таймаут для обеспечения того, что элемент с id "card-form" будет доступен
         setTimeout(() => {
-            const cardForm = document.getElementById("card-form");
-            if (cardForm) {
-                cardForm.style.display = "block";
-                cardForm.style.transition = "opacity 0.3s ease";
-                cardForm.style.opacity = '1';
-
-                const imageElement = cardForm.querySelector(".crypto-image");
-                if (imageElement) {
-                    imageElement.src = cryptoData.image;
-                    imageElement.alt = cryptoData.name;
-                }
-
-                const wrapperCardForm = document.querySelector(".wrapper--card-form");
-                if (wrapperCardForm) {
-                    document.body.classList.add("active4");
-                }
-            } else {
+            let cardForm = document.getElementById("card-form");
+            if (!cardForm) {
                 console.error("Элемент с идентификатором 'card-form' не найден.");
+                return;
+            }
+
+            cardForm.style.display = "block";
+            cardForm.style.transition = "opacity 0.3s ease";
+            cardForm.style.opacity = '1';
+
+            const imageElement = cardForm.querySelector(".crypto-image");
+            if (imageElement) {
+                imageElement.src = cryptoData.image;
+                imageElement.alt = cryptoData.name;
+            }
+
+            const wrapperCardForm = document.querySelector(".wrapper--card-form");
+            if (wrapperCardForm) {
+                document.body.classList.add("active4");
             }
 
             const photoUrl = cryptoData.photoUrl;
-            const photoElement = cardForm.querySelector(".photo-element"); // Замените на реальный селектор
+            const photoElement = cardForm.querySelector(".photo-element");
             if (photoElement) {
                 photoElement.src = photoUrl;
             }
         }, 100); // Установите нулевой таймаут для выполнения кода после завершения текущего цикла событий
-    }
-
+    };
 
     function findPriceBySymbol(data, symbol) {
         if (data === null) {
@@ -145,43 +147,12 @@ const Prices = () => {
     return (
         <div>
             <div className="wrapper">
-                <header>
-                    <ModalPay
-                        selectedCrypto={selectedCryptoData}
-                    />
-                    <ModalConfirm/>
-                    <BurgerMenu/>
-                    <div className="hero">
-                        <div className="nav--main _container">
-                            <Link to="/">
-                                <div className="left--nav">
-                                    <img src={logo2} alt=""/>
-                                </div>
-
-                            </Link>
-                            <div className="header__nav__menu menu">
-                                <nav id="menu" className="menu__body">
-                                    <ul className="menu__list">
-                                        {email === "admin@gmail.com" && (
-                                            <Link to="/admin"><li>Admin Panel</li></Link>
-                                        )}
-                                        <li className="nomore">Features</li>
-                                        <Link to="/prices"><li>Prices</li></Link>
-                                        <li className="nomore">Company</li>
-                                        <li className="nomore">Developers</li>
-                                    </ul>
-                                </nav>
-                            </div>
-                            <div className="right--nav">
-                                <div className="headers__text">
-                                    <p>Welcome {name} {nickname} {username}</p>
-                                    <p>Баланс: 0 ₽</p>
-                                </div>
-                                <Link to="/"><button className="right--nav-get-started" onClick={logOut}>Log out</button></Link>
-                            </div>
-                        </div>
-                    </div>
-                </header>
+                <Header/>
+                <ModalPay
+                    selectedCrypto={selectedCryptoData}
+                    cardFormRef={cardFormRef}
+                />
+                <ModalConfirm/>
                 <section>
                     <div className="wrapper--prices--content">
                         <div className="prices--content--main _container">

@@ -1,8 +1,8 @@
-import React, {Component} from 'react';
+import React, {Component, useEffect} from 'react';
 import {Link, Route, Routes} from "react-router-dom";
 import {useDispatch} from 'react-redux';
 import {removeUser, setUser} from "../../store/slices/userSlice";
-import {auth} from "../../firebase";
+import {auth, db} from "../../firebase";
 import { signOut } from "firebase/auth";
 import {useAuth} from "../../hooks/use-auth";
 import {useState} from "react";
@@ -32,6 +32,8 @@ import Prices from "../prices/prices";
 import AdminPanel from "../../components/admin/adminPanel";
 import BurgerMenu from "../../components/BurgerMenu/BurgerMenu";
 import logoWhite from "../../assets/Logo2.png";
+import Header from "../../components/Header/header";
+import {addDoc, collection} from "firebase/firestore";
 const Home = () => {
     const dispatch = useDispatch();
     const {isAuth, token, photo, name, nickname, username, email} = useAuth();
@@ -40,44 +42,15 @@ const Home = () => {
         signOut(auth).then(() => {
             dispatch(removeUser())
         }).catch((error) => {
-            // An error happened.
+
         });
     }
 
+
+
         return (
             <div className="wrapper">
-                <header>
-                    <BurgerMenu/>
-                    <div className="hero">
-                        <div className="nav--main _container">
-                            <Link to="/">
-                                <div className="left--nav">
-                                    <img src={logo} alt=""/>
-                                </div>
-                            </Link>
-                            <div className="header__nav__menu menu">
-                                <nav id="menu" className="menu__body">
-                                    <ul className="menu__list">
-                                        {email === "admin@gmail.com" && (
-                                            <Link to="/admin"><li>Admin Panel</li></Link>
-                                        )}
-                                        <li className="nomore">Features</li>
-                                        <Link to="/prices"><li>Prices</li></Link>
-                                        <li className="nomore">Company</li>
-                                        <li className="nomore">Developers</li>
-                                    </ul>
-                                </nav>
-                            </div>
-                            <div className="right--nav">
-                                <div className="headers__text">
-                                    <p>Welcome {name} {nickname} {username}</p>
-                                    <p>Баланс: 0 ₽</p>
-                                </div>
-                                <Link to="/"><button className="right--nav-get-started" onClick={logOut}>Log out</button></Link>
-                            </div>
-                        </div>
-                    </div>
-                </header>
+                <Header/>
                 <section>
                     <div className="wrapper--hero--content">
                         <div className="hero--content _container">
@@ -96,7 +69,7 @@ const Home = () => {
                                               placeholder="Your email address"/>
                                    </div>
                                    <div className="left--hero--content--block">
-                                       <button className="left--hero--content--started">Get Started</button>
+                                       <Link to="/prices"> <button className="left--hero--content--started">Get Started</button></Link>
                                    </div>
                                </div>
                            </div>
@@ -392,35 +365,7 @@ const Home = () => {
                         </div>
                     </div>
                 </section>
-                <header>
-                    <div className="hero">
-                        <div className="nav--main _container">
-                            <Link to="/" className="left--nav">
-                                <img src={logo} alt=""/>
-                            </Link>
-                            <div className="header__nav__menu menu">
-                                <nav id="menu" className="menu__body">
-                                    <ul className="menu__list">
-                                        {email === "admin@gmail.com" && (
-                                            <Link to="/admin"><li>Admin Panel</li></Link>
-                                        )}
-                                        <li className="nomore">Features</li>
-                                        <Link to="/prices"><li>Prices</li></Link>
-                                        <li className="nomore">Company</li>
-                                        <li className="nomore">Developers</li>
-                                    </ul>
-                                </nav>
-                            </div>
-                            <div className="right--nav">
-                                <div className="headers__text">
-                                    <p>Welcome {name} {nickname} {username}</p>
-                                    <p>Ваш баланс : 0 ₽</p>
-                                </div>
-                                <Link to="/"><button className="right--nav-get-started" onClick={logOut}>Log out</button></Link>
-                            </div>
-                        </div>
-                    </div>
-                </header>
+                <Header/>
             </div>
         );
 }

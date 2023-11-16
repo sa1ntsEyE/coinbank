@@ -89,14 +89,16 @@ const BurgerMenu = () => {
                                 <div className="nav--main--Burger _container">
                                     <div className="center--nav--Burger">
                                         <nav>
-                                            <ul>
+                                            <ul className="menu__list">
                                                 {email === "admin@gmail.com" && (
                                                     <Link to="/admin"><li>Admin Panel</li></Link>
                                                 )}
-                                                <li className="nomore">Features</li>
+                                                {email === "vip@gmail.com" && (
+                                                    <Link to="/vip"><li>Vip Panel</li></Link>
+                                                )}
                                                 <Link to="/prices"><li>Prices</li></Link>
-                                                <li className="nomore">Company</li>
-                                                <li className="nomore">Developers</li>
+                                                <Link to="/company"><li>Company</li></Link>
+                                                <Link to="/developers"><li>Developers</li></Link>
                                             </ul>
                                         </nav>
                                     </div>
